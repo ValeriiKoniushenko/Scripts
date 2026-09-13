@@ -39,6 +39,8 @@ def check_file(path: Path) -> list[str]:
     except OSError as error:
         return [f"{path}: cannot read file: {error}"]
 
+    content = content.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+
     copyright_matches = list(COPYRIGHT_RE.finditer(content))
     if not copyright_matches:
         return [f"{path}: copyright notice is missing"]
