@@ -33,6 +33,10 @@ COPYRIGHT_LINE_RE = re.compile(
 )
 
 
+def display_line(line: bytes) -> str:
+    return line.decode("utf-8", errors="backslashreplace").replace("\n", r"\n")
+
+
 def check_file(path: Path) -> list[str]:
     try:
         content = path.read_bytes()
@@ -90,21 +94,22 @@ def check_file(path: Path) -> list[str]:
     if PROJECT_LINE_RE.fullmatch(lines[0]) is None:
         return [
             f"{path}:1: header text mismatch; expected `// <PROJECT_NAME>\\n`, "
-            f"found `{lines[0]!r}`"
+            f"found `{display_line(lines[0])}`"
         ]
 
     for line_number, expected in enumerate(EXPECTED_LINES, start=2):
         if len(lines) < line_number:
             return [
                 f"{path}: header is incomplete at line `{line_number}`; "
-                f"expected `{expected!r}`"
+                f"expected `{display_line(expected)}`"
             ]
 
         actual = lines[line_number - 1]
         if actual != expected:
             return [
                 f"{path}:{line_number}: header text mismatch; "
-                f"expected `{expected!r}`, found `{actual!r}`"
+                f"expected `{display_line(expected)}`, "
+                f"found `{display_line(actual)}`"
             ]
 
     return []
