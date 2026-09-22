@@ -74,7 +74,7 @@ def check_file(path: Path) -> list[str]:
         if actual_year != CURRENT_YEAR:
             issues.append(
                 f"{path}:{copyright_index + 1}: invalid copyright year "
-                f"{actual_year}; expected {CURRENT_YEAR}"
+                f"{actual_year}; expected `{CURRENT_YEAR}`"
             )
 
     if issues:
@@ -89,22 +89,22 @@ def check_file(path: Path) -> list[str]:
 
     if PROJECT_LINE_RE.fullmatch(lines[0]) is None:
         return [
-            f"{path}:1: header text mismatch; expected b'// <PROJECT_NAME>\\n', "
-            f"found {lines[0]!r}"
+            f"{path}:1: header text mismatch; expected `// <PROJECT_NAME>\\n`, "
+            f"found `{lines[0]!r}`"
         ]
 
     for line_number, expected in enumerate(EXPECTED_LINES, start=2):
         if len(lines) < line_number:
             return [
-                f"{path}: header is incomplete at line {line_number}; "
-                f"expected {expected!r}"
+                f"{path}: header is incomplete at line `{line_number}`; "
+                f"expected `{expected!r}`"
             ]
 
         actual = lines[line_number - 1]
         if actual != expected:
             return [
                 f"{path}:{line_number}: header text mismatch; "
-                f"expected {expected!r}, found {actual!r}"
+                f"expected `{expected!r}`, found `{actual!r}`"
             ]
 
     return []
